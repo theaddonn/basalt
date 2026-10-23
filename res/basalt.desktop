@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=basalt
+Comment=A C++ rewrite of Regolith, the Minecraft Bedrock add-on compiler
+Exec=basalt
+Icon=basalt
+Terminal=true
+Categories=Development;

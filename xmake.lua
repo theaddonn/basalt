@@ -31,6 +31,13 @@ target("basalt")
     if is_plat("windows", "mingw") then
         -- makes narrow Windows APIs (and std::filesystem) use UTF-8
         add_files("res/basalt.manifest")
+        -- app icon and version info shown in Explorer
+        add_files("res/basalt.rc")
+    end
+    if is_plat("linux") then
+        -- `xmake install` puts the icon and desktop entry where launchers find them
+        add_installfiles("res/basalt.desktop", {prefixdir = "share/applications"})
+        add_installfiles("res/basalt.png", {prefixdir = "share/icons/hicolor/256x256/apps"})
     end
     add_deps("basalt-core")
     add_packages("cli11")
