@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Rejects the commit if any staged C++ file is not clang-formatted.
+# Checks the staged content, not the working tree.
+
+if ! command -v clang-format >/dev/null 2>&1; then
+    echo "pre-commit: clang-format not found, skipping format check" >&2
+    exit 0
+fi
+
+failed=()
+while IFS= read -r -d '' file; do
+    if ! git show ":$file" | clang-format --dry-run --Werror --assume-filename="$file" >/dev/null 2>&1; then
+        failed+=("$file")
+    fi
+done < <(git diff --cached --name-only -z --diff-filter=ACMR -- '*.cpp' '*.hpp' '*.h' '*.cc')
+
+if ((${#failed[@]})); then
+    echo "pre-commit: these files are not formatted:" >&2
+    printf '  %s\n' "${failed[@]}" >&2
+    echo >&2
+    echo "Fix with:  clang-format -i ${failed[*]}" >&2
+    echo "Skip with: git commit --no-verify" >&2
+    exit 1
+fi
