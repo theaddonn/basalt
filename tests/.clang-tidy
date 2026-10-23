@@ -1,5 +1,8 @@
-# Catch2's macros expand to do-while loops and static functions.
+# Catch2's macros expand to do-while loops, static registration objects and
+# large functions (every SECTION adds branches).
 InheritParentConfig: true
 Checks: >
   -cppcoreguidelines-avoid-do-while,
-  -misc-use-anonymous-namespace
+  -misc-use-anonymous-namespace,
+  -readability-function-cognitive-complexity,
+  -cert-err58-cpp

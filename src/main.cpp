@@ -38,7 +38,12 @@ namespace {
   if (*run_cmd) {
     const auto config = basalt::load_config("config.json");
     if (!config) {
-      spdlog::error("{}", config.error());
+      spdlog::error("{}", config.error().to_string());
+      return 1;
+    }
+    if (const auto checked = basalt::check_profile(*config, profile);
+        !checked) {
+      spdlog::error("{}", checked.error().to_string());
       return 1;
     }
     spdlog::info("project '{}' by {}", config->name, config->author);

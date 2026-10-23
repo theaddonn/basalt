@@ -1,0 +1,31 @@
+{
+	"$schema": "https://raw.githubusercontent.com/Bedrock-OSS/regolith-schemas/main/config/v1.2.json",
+	"name": "Local Requirements Test Project",
+	"author": "Bedrock-OSS",
+	"packs": {
+		"behaviorPack": "./packs/BP",
+		"resourcePack": "./packs/RP"
+	},
+	"regolith": {
+		"dataPath": "./packs/data",
+		"filterDefinitions": {
+			"some_script": {
+				"runWith": "python",
+				"script": "../scripts/some_script.py"
+			}
+		},
+		"profiles": {
+			"dev": {
+				"filters": [
+					{
+						"filter": "some_script"
+					}
+				],
+				"export": {
+					"target": "local",
+					"readOnly": true
+				}
+			}
+		}
+	}
+}
