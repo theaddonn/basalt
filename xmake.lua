@@ -49,3 +49,16 @@ target("basalt-tests")
     add_deps("basalt-core")
     add_packages("catch2")
     add_tests("default")
+
+-- `xmake icons` regenerates the logo and app icons. The generator is its own
+-- xmake project in tools/icons, so its dependencies never touch normal builds.
+task("icons")
+    set_category("action")
+    set_menu {usage = "xmake icons", description = "Regenerate the logo and app icons", options = {}}
+    on_run(function ()
+        local root = os.projectdir()
+        os.cd(path.join(root, "tools", "icons"))
+        os.exec("xmake f -P . -m release -y")
+        os.exec("xmake build -P . -y")
+        os.execv("xmake", {"run", "-P", ".", "basalt-icons", root})
+    end)
