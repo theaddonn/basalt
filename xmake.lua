@@ -28,6 +28,10 @@ target("basalt-core")
 target("basalt")
     set_kind("binary")
     add_files("src/main.cpp")
+    if is_plat("windows", "mingw") then
+        -- makes narrow Windows APIs (and std::filesystem) use UTF-8
+        add_files("res/basalt.manifest")
+    end
     add_deps("basalt-core")
     add_packages("cli11")
 

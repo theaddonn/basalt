@@ -27,3 +27,14 @@ TEST_CASE("load_config reports a missing file") {
     auto config = basalt::load_config("does/not/exist.json");
     REQUIRE_FALSE(config);
 }
+
+TEST_CASE("load_config handles UTF-8 content") {
+    auto path = std::filesystem::temp_directory_path() / "basalt_test_utf8.json";
+    std::ofstream(path) << R"({ "name": "Grüße 🌍", "author": "Łucja" })";
+
+    auto config = basalt::load_config(path);
+    REQUIRE(config);
+    CHECK(config->name == "Grüße 🌍");
+    CHECK(config->author == "Łucja");
+    std::filesystem::remove(path);
+}
