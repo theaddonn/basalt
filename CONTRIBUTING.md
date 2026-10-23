@@ -8,7 +8,7 @@ xmake test     # run tests
 xmake f -m release && xmake   # release build
 ```
 
-Needs xmake and a C++23 compiler (GCC 14+, Clang 18+, MSVC 17.10+).
+Needs xmake and a C++20 compiler (GCC 11+, Clang 14+, MSVC 17.0+).
 
 ## Code style
 

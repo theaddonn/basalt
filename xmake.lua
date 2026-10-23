@@ -2,7 +2,7 @@ set_project("basalt")
 set_version("0.1.0")
 set_xmakever("2.9.0")
 
-set_languages("c++23")
+set_languages("c++20")
 -- source and execution charset are UTF-8 everywhere (/utf-8 on MSVC)
 set_encodings("utf-8")
 set_warnings("allextra")

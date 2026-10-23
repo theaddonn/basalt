@@ -12,7 +12,7 @@ Early days. Nothing works yet.
 
 ## Building
 
-Requires [xmake](https://xmake.io) and a C++23 compiler (GCC 14+, Clang 18+, MSVC 17.10+).
+Requires [xmake](https://xmake.io) and a C++20 compiler (GCC 11+, Clang 14+, MSVC 17.0+).
 
 ```sh
 xmake            # build (deps are fetched automatically)
