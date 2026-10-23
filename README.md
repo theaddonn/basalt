@@ -14,7 +14,7 @@ Early days. Nothing works yet.
 
 ## Building
 
-Requires [xmake](https://xmake.io) and a C++20 compiler (GCC 11+, Clang 14+, MSVC 17.0+).
+Requires [xmake](https://xmake.io) and a C++20 compiler with `std::format` (GCC 13+, Clang 17+, MSVC 17.0+).
 
 ```sh
 xmake            # build (deps are fetched automatically)

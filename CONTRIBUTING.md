@@ -8,7 +8,7 @@ xmake test     # run tests
 xmake f -m release && xmake   # release build
 ```
 
-Needs xmake and a C++20 compiler (GCC 11+, Clang 14+, MSVC 17.0+).
+Needs xmake and a C++20 compiler with `std::format` (GCC 13+, Clang 17+, MSVC 17.0+).
 
 ## Setup
 
@@ -31,10 +31,26 @@ xmake icons
 
 ## Code style
 
-- Format with `clang-format` (config in `.clang-format`) before committing.
+- Formatting follows `.clang-format`: LLVM style with 2-space indents, an
+  80-column limit, `int *p` pointers and Linux-style braces (function bodies
+  open on their own line, everything else stays attached). Run
+  `clang-format -i` before committing; the pre-commit hook and CI check it.
+- Lints follow `.clang-tidy` (modernize, bugprone, performance, readability,
+  C++ Core Guidelines). CI fails on any warning. Run it locally with:
+
+  ```sh
+  xmake project -k compile_commands build
+  clang-tidy -p build src/**/*.cpp
+  ```
+
+- Write modern C++20: `std::format`, `std::span`, `std::string_view`, ranges,
+  designated initializers, `constexpr`, `[[nodiscard]]` and `const` by default.
+  No raw `new`/`delete`, C arrays or C-style casts.
+- Naming: `snake_case` for functions, variables and namespaces, `CamelCase`
+  for types, `UPPER_CASE` for macros.
 - Headers (`.hpp`) live next to their sources (`.cpp`) under `src/`.
 - Return errors with `tl::expected` rather than throwing.
-- Source files are UTF-8, and so are strings at runtime.
+- Source files and runtime strings are UTF-8.
 
 ## Commits
 
@@ -52,6 +68,7 @@ This repo uses [Conventional Commits](https://www.conventionalcommits.org):
 | `perf`     | performance improvement                      |
 | `test`     | adding or fixing tests                       |
 | `docs`     | documentation only                           |
+| `style`    | formatting only, no behaviour change         |
 | `build`    | xmake, dependencies                          |
 | `ci`       | GitHub Actions                               |
 | `chore`    | anything else (tooling, formatting, etc.)    |

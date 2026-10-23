@@ -17,6 +17,30 @@ jobs:
           git ls-files -z '*.cpp' '*.hpp' '*.h' '*.cc' \
             | xargs -0 --no-run-if-empty clang-format --dry-run --Werror
 
+  tidy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+      - name: Install clang-tidy
+        # keep in sync with the version used locally
+        run: pip install clang-tidy==20.1.0
+      - name: Generate compile databases
+        run: |
+          xmake f -m release -y
+          xmake project -k compile_commands build
+          cd tools/icons
+          xmake f -P . -m release -y
+          xmake project -P . -k compile_commands build
+      - name: Run clang-tidy
+        run: |
+          git ls-files -z 'src/*.cpp' 'tests/*.cpp' \
+            | xargs -0 clang-tidy -p build --quiet --warnings-as-errors='*'
+          clang-tidy -p tools/icons/build --quiet --warnings-as-errors='*' \
+            tools/icons/main.cpp
+
   build:
     name: build (${{ matrix.os }}, ${{ matrix.mode }})
     strategy:
