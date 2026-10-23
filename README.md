@@ -1,3 +1,5 @@
+<img src="assets/logo.svg" alt="basalt logo" width="160" align="right">
+
 # basalt
 
 A C++ rewrite of [Regolith](https://github.com/Bedrock-OSS/regolith), the Add-On compiler for Minecraft Bedrock Edition.
