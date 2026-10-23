@@ -1,0 +1,37 @@
+set_project("basalt")
+set_version("0.1.0")
+set_xmakever("2.9.0")
+
+set_languages("c++23")
+set_warnings("allextra")
+add_rules("mode.debug", "mode.release", "mode.releasedbg")
+add_rules("plugin.compile_commands.autoupdate", {outputdir = "build"})
+
+if is_mode("debug") then
+    set_policy("build.sanitizer.address", true)
+    set_policy("build.sanitizer.undefined", true)
+end
+
+add_requires("cli11", "nlohmann_json", "spdlog", "tl_expected")
+add_requires("catch2 3.x", {optional = true})
+
+-- core logic, kept separate from main so tests can link against it
+target("basalt-core")
+    set_kind("static")
+    add_files("src/basalt/**.cpp")
+    add_includedirs("include", {public = true})
+    add_packages("nlohmann_json", "spdlog", "tl_expected", {public = true})
+
+target("basalt")
+    set_kind("binary")
+    add_files("src/main.cpp")
+    add_deps("basalt-core")
+    add_packages("cli11")
+
+target("basalt-tests")
+    set_kind("binary")
+    set_default(false)
+    add_files("tests/**.cpp")
+    add_deps("basalt-core")
+    add_packages("catch2")
+    add_tests("default")
