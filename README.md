@@ -1,6 +1,6 @@
 # basalt
 
-A C++ rewrite of [Regolith](https://github.com/Bedrock-OSS/regolith), the add-on compiler for Minecraft Bedrock Edition.
+A C++ rewrite of [Regolith](https://github.com/Bedrock-OSS/regolith), the Add-On compiler for Minecraft Bedrock Edition.
 
 It's a fun side project. The aim is a fast, single-binary tool that can run existing Regolith projects (`config.json`, filters, profiles) without changes.
 
