@@ -8,7 +8,7 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install clang-format
         # keep in sync with the version used locally
         run: pip install clang-format==20.1.8
@@ -32,7 +32,7 @@ jobs:
             mode: debug
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
@@ -42,3 +42,37 @@ jobs:
         run: xmake -y
       - name: Test
         run: xmake test -y
+      - name: Upload Windows binary
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: basalt-windows
+          path: build/windows/x64/release/basalt.exe
+
+  appimage:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+      - name: Build
+        run: |
+          xmake f -m release -y
+          xmake -y
+      - name: Create AppDir
+        run: |
+          xmake install -o AppDir/usr basalt
+          cp res/basalt.desktop res/basalt.png AppDir/
+          cp res/basalt.png AppDir/.DirIcon
+          ln -s usr/bin/basalt AppDir/AppRun
+      - name: Build AppImage
+        run: |
+          wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage --appimage-extract-and-run AppDir basalt-x86_64.AppImage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: basalt-appimage
+          path: basalt-x86_64.AppImage
