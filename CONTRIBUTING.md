@@ -6,6 +6,9 @@
 xmake          # build (debug by default, deps fetched automatically)
 xmake test     # run tests
 xmake f -m release && xmake   # release build
+xmake f -m dist && xmake      # shipping build: -O3, LTO (deps too), stripped,
+                              # static C++ runtime
+xmake f -m dist --native=y    # also tune for this CPU (not portable)
 ```
 
 Needs xmake and a C++20 compiler with `std::format` (GCC 13+, Clang 17+, MSVC 17.0+).

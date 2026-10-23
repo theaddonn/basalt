@@ -47,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        mode: [release]
+        mode: [dist]
         include:
           # debug builds run tests under address + undefined behaviour sanitizers
           - os: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: basalt-windows
-          path: build/windows/x64/release/basalt.exe
+          path: build/windows/x64/dist/basalt.exe
 
   appimage:
     needs: build
@@ -83,7 +83,7 @@ jobs:
           xmake-version: latest
       - name: Build
         run: |
-          xmake f -m release -y
+          xmake f -m dist -y
           xmake -y
       - name: Create AppDir
         run: |

@@ -20,6 +20,7 @@ Requires [xmake](https://xmake.io) and a C++20 compiler with `std::format` (GCC 
 xmake            # build (deps are fetched automatically)
 xmake run basalt run default
 xmake test       # run tests
+xmake f -m dist && xmake   # optimized release build
 ```
 
 ## License

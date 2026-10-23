@@ -14,8 +14,59 @@ if is_mode("debug") then
     set_policy("build.sanitizer.undefined", true)
 end
 
+-- `xmake f -m dist`: shipping build tuned for peak performance and small,
+-- self-contained binaries. Add `--native=y` to also tune for this machine's CPU
+-- (the result may not run on other CPUs).
+option("native")
+    set_default(false)
+    set_showmenu(true)
+    set_description("Optimize dist builds for the host CPU (-march=native)")
+option_end()
+
+if is_mode("dist") then
+    set_optimize("fastest")  -- -O3 / /Ox
+    set_symbols("hidden")
+    set_strip("all")
+    add_defines("NDEBUG")
+    set_policy("build.optimization.lto", true)
+
+    if is_plat("windows") then
+        set_runtimes("MT")  -- static CRT, no VC++ redistributable needed
+        -- /Gy /Gw: per-function/data sections, /Ob3: aggressive inlining
+        add_cxflags("/Gy", "/Gw", "/Ob3", "/GS-")
+        add_ldflags("/OPT:REF", "/OPT:ICF")
+        if has_config("native") then
+            add_cxflags("/arch:AVX2")
+        end
+    else
+        add_cxflags("-ffunction-sections", "-fdata-sections",
+                    "-fno-plt", "-fno-semantic-interposition")
+        if is_plat("macosx") then
+            add_ldflags("-Wl,-dead_strip")
+        else
+            add_ldflags("-Wl,--gc-sections", "-Wl,-O2", "-Wl,--as-needed",
+                        "-static-libstdc++", "-static-libgcc")
+        end
+        if has_config("native") then
+            add_cxflags("-march=native", "-mtune=native")
+        end
+    end
+end
+
 add_requires("cli11", "nlohmann_json", "spdlog", "tl_expected")
 add_requires("catch2 3.x", {optional = true})
+
+if is_mode("dist") then
+    -- build dependencies with LTO too so they can be inlined across libraries
+    local configs = {lto = true}
+    if is_plat("windows") then
+        configs.runtimes = "MT"
+    end
+    if has_config("native") then
+        configs.cxflags = is_plat("windows") and "/arch:AVX2" or "-march=native"
+    end
+    add_requireconfs("*", {configs = configs})
+end
 
 -- core logic, kept separate from main so tests can link against it
 target("basalt-core")
