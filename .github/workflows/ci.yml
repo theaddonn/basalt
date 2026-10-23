@@ -5,11 +5,31 @@ on:
   pull_request:
 
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clang-format
+        # keep in sync with the version used locally
+        run: pip install clang-format==20.1.8
+      - name: Check formatting
+        run: |
+          git ls-files -z '*.cpp' '*.hpp' '*.h' '*.cc' \
+            | xargs -0 --no-run-if-empty clang-format --dry-run --Werror
+
   build:
+    name: build (${{ matrix.os }}, ${{ matrix.mode }})
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        mode: [release]
+        include:
+          # debug builds run tests under address + undefined behaviour sanitizers
+          - os: ubuntu-latest
+            mode: debug
+          - os: macos-latest
+            mode: debug
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +37,7 @@ jobs:
         with:
           xmake-version: latest
       - name: Configure
-        run: xmake f -m release -y
+        run: xmake f -m ${{ matrix.mode }} -y
       - name: Build
         run: xmake -y
       - name: Test
