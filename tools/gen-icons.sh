@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# Regenerates the raster icons from assets/logo.svg.
+# Regenerates assets/logo.svg (from tools/gen-logo.py) and all raster icons.
 # Needs rsvg-convert and ImageMagick.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
+
+python3 tools/gen-logo.py assets/logo.svg
 
 rsvg-convert -w 512 assets/logo.svg -o assets/logo.png
 rsvg-convert -w 256 assets/logo.svg -o res/basalt.png
