@@ -149,15 +149,17 @@ constexpr std::array run_with_parsers{
   if (run_with.empty()) {
     return parse_remote(json);
   }
-  const auto *parser =
-      std::ranges::find(run_with_parsers, run_with, &RunWithParser::name);
-  if (parser == run_with_parsers.end()) {
-    return tl::unexpected(ConfigError{
-        .path = {"runWith"},
-        .message = std::format("invalid runWith \"{}\" (valid values: {})",
-                               run_with, valid_run_with)});
+  // A loop rather than std::ranges::find: std::array iterators are raw pointers
+  // in libstdc++ but not in MSVC's library, which trips up `auto *`.
+  for (const auto &parser : run_with_parsers) {
+    if (parser.name == run_with) {
+      return parser.parse(json);
+    }
   }
-  return parser->parse(json);
+  return tl::unexpected(ConfigError{
+      .path = {"runWith"},
+      .message = std::format("invalid runWith \"{}\" (valid values: {})",
+                             run_with, valid_run_with)});
 }
 
 } // namespace
