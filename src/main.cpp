@@ -17,39 +17,39 @@ namespace {
 
 [[nodiscard]] int run(int argc, char **argv)
 {
-  CLI::App app{"basalt - a C++ rewrite of Regolith"};
-  app.set_version_flag("--version", std::string{basalt::version});
-  app.require_subcommand(1);
+    CLI::App app{"basalt - a C++ rewrite of Regolith"};
+    app.set_version_flag("--version", std::string{basalt::version});
+    app.require_subcommand(1);
 
-  bool debug = false;
-  app.add_flag("--debug", debug, "Enable debug logging");
+    bool debug = false;
+    app.add_flag("--debug", debug, "Enable debug logging");
 
-  std::string profile = "default";
-  auto *run_cmd = app.add_subcommand("run", "Run a profile");
-  run_cmd->add_option("profile", profile, "Profile to run");
+    std::string profile = "default";
+    auto *run_cmd = app.add_subcommand("run", "Run a profile");
+    run_cmd->add_option("profile", profile, "Profile to run");
 
-  argv = app.ensure_utf8(argv);
-  CLI11_PARSE(app, argc, argv);
+    argv = app.ensure_utf8(argv);
+    CLI11_PARSE(app, argc, argv);
 
-  if (debug) {
-    spdlog::set_level(spdlog::level::debug);
-  }
-
-  if (*run_cmd) {
-    const auto config = basalt::load_config("config.json");
-    if (!config) {
-      spdlog::error("{}", config.error().to_string());
-      return 1;
+    if (debug) {
+        spdlog::set_level(spdlog::level::debug);
     }
-    if (const auto checked = basalt::check_profile(*config, profile);
-        !checked) {
-      spdlog::error("{}", checked.error().to_string());
-      return 1;
+
+    if (*run_cmd) {
+        const auto config = basalt::load_config("config.json");
+        if (!config) {
+            spdlog::error("{}", config.error().to_string());
+            return 1;
+        }
+        if (const auto checked = basalt::check_profile(*config, profile);
+            !checked) {
+            spdlog::error("{}", checked.error().to_string());
+            return 1;
+        }
+        spdlog::info("project '{}' by {}", config->name, config->author);
+        spdlog::warn("running profile '{}' is not implemented yet", profile);
     }
-    spdlog::info("project '{}' by {}", config->name, config->author);
-    spdlog::warn("running profile '{}' is not implemented yet", profile);
-  }
-  return 0;
+    return 0;
 }
 
 } // namespace
@@ -57,16 +57,16 @@ namespace {
 int main(int argc, char **argv)
 {
 #ifdef _WIN32
-  SetConsoleOutputCP(CP_UTF8);
-  SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
 #endif
 
-  try {
-    return run(argc, argv);
-  } catch (const std::exception &e) {
-    spdlog::critical("{}", e.what());
-  } catch (...) {
-    spdlog::critical("unknown error");
-  }
-  return 1;
+    try {
+        return run(argc, argv);
+    } catch (const std::exception &e) {
+        spdlog::critical("{}", e.what());
+    } catch (...) {
+        spdlog::critical("unknown error");
+    }
+    return 1;
 }

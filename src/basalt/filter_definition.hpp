@@ -17,51 +17,51 @@ namespace basalt {
 // root for local filters).
 
 struct PythonFilter {
-  std::string script;
-  int venv_slot = 0;
-  std::optional<std::string> requirements;
+    std::string script;
+    int venv_slot = 0;
+    std::optional<std::string> requirements;
 };
 
 struct NodeJsFilter {
-  std::string script;
-  std::optional<std::string> requirements;
+    std::string script;
+    std::optional<std::string> requirements;
 };
 
 struct BunFilter {
-  std::string script;
+    std::string script;
 };
 
 struct DenoFilter {
-  std::string script;
+    std::string script;
 };
 
 struct JavaFilter {
-  std::string path; // the .jar; Regolith also accepts the old key `script`
+    std::string path; // the .jar; Regolith also accepts the old key `script`
 };
 
 struct DotnetFilter {
-  std::string path;
+    std::string path;
 };
 
 struct NimFilter {
-  std::string script;
-  std::optional<std::string> requirements;
+    std::string script;
+    std::optional<std::string> requirements;
 };
 
 struct ShellFilter {
-  std::string command;
+    std::string command;
 };
 
 struct ExeFilter {
-  std::string exe;
+    std::string exe;
 };
 
 // A filter downloaded from a git repository (no `runWith`).
 struct RemoteFilter {
-  // Defaults to "github.com/Bedrock-OSS/regolith-filters" when not given.
-  std::string url;
-  // Required. A semver, "latest", "HEAD", a tag or a commit sha.
-  std::string version;
+    // Defaults to "github.com/Bedrock-OSS/regolith-filters" when not given.
+    std::string url;
+    // Required. A semver, "latest", "HEAD", a tag or a commit sha.
+    std::string version;
 };
 
 using FilterKind =
@@ -69,9 +69,9 @@ using FilterKind =
                  DotnetFilter, NimFilter, ShellFilter, ExeFilter, RemoteFilter>;
 
 struct FilterDefinition {
-  std::string id;
-  FilterKind kind;
-  nlohmann::json raw; // the full definition object
+    std::string id;
+    FilterKind kind;
+    nlohmann::json raw; // the full definition object
 };
 
 inline constexpr std::string_view default_remote_filter_url =

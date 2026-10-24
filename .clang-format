@@ -2,7 +2,9 @@
 # Requires clang-format 17+ (CI pins 20.1.8).
 BasedOnStyle: LLVM
 Standard: c++20
-IndentWidth: 2
+IndentWidth: 4
+# keep public:/private: flush with the class keyword
+AccessModifierOffset: -4
 ColumnLimit: 80
 
 # int *p, like LLVM, Linux and GNU

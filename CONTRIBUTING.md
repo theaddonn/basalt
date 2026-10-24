@@ -34,7 +34,7 @@ xmake icons
 
 ## Code style
 
-- Formatting follows `.clang-format`: LLVM style with 2-space indents, an
+- Formatting follows `.clang-format`: LLVM style with 4-space indents, an
   80-column limit, `int *p` pointers and Linux-style braces (function bodies
   open on their own line, everything else stays attached). Run
   `clang-format -i` before committing; the pre-commit hook and CI check it.

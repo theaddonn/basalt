@@ -11,12 +11,12 @@ namespace basalt {
 // to the problem, outermost first, e.g. {"regolith", "profiles", "default",
 // "filters", "0"}. It is empty for errors about the whole document.
 struct ConfigError {
-  std::vector<std::string> path;
-  std::string message;
+    std::vector<std::string> path;
+    std::string message;
 
-  // "regolith -> profiles -> default: missing required property \"export\""
-  // or just the message when the path is empty.
-  [[nodiscard]] std::string to_string() const;
+    // "regolith -> profiles -> default: missing required property \"export\""
+    // or just the message when the path is empty.
+    [[nodiscard]] std::string to_string() const;
 };
 
 } // namespace basalt
